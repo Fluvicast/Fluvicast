@@ -13,11 +13,15 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.use(logger('dev'));
+app.use(require('helmet')());
+
+app.use(logger(':remote-addr - :remote-user [:date[clf]] :method :url :status :response-time ms - :res[content-length]'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(require('./srvutil/req/preferences.js'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
